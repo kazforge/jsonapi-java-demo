@@ -1,0 +1,19 @@
+[versions]
+
+jsonapi = "0.2.0"
+jackson = "3.2.3"
+junit = "6.1.3"
+spotless = "8.10.4"
+# 1.37.0 changes the Style API used by Spotless 8.10.4.
+google-java-format = "1.36.1"
+ktlint = "1.8.0"
+
+[libraries]
+jsonapi-jackson3 = { module = "com.kazforge:jsonapi-java-jackson3", version.ref = "jsonapi" }
+jackson-databind = { module = "tools.jackson.core:jackson-databind", version.ref = "jackson" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
