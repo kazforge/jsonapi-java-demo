@@ -19,7 +19,7 @@ Groovy/Spock and documentation formatting are out of scope.
 Keep examples small, runnable and focused on observable consumer behavior.
 Use supported public APIs and released `com.kazforge:jsonapi-java-*` artifacts
 from Maven Central. Do not add alternate repositories or local artifacts.
-The initial Jackson 3 example deliberately tests release `0.2.0` for KAZ-126;
+The Jackson 3 example deliberately tests the released `0.3.0` line;
 dependency upgrades should be a separate, explicit change.
 
 Manage dependency coordinates and versions in `gradle/libs.versions.toml` and

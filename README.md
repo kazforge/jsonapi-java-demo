@@ -28,14 +28,14 @@ See the [full documentation](https://jsonapi.kazforge.com/) for library usage.
 
 Examples consume released artifacts exclusively from Maven Central, not the
 jsonapi-java source repository. The initial example depends directly on
-`com.kazforge:jsonapi-java-jackson3:0.2.0`; its API, annotations, core and mapping
+`com.kazforge:jsonapi-java-jackson3:0.3.0`; its API, annotations and core
 dependencies arrive transitively. Dependency versions live in
 [`gradle/libs.versions.toml`](gradle/libs.versions.toml); Jackson is selected
 explicitly and JUnit modules are aligned with its BOM. `settings.gradle.kts`
 enforces Maven Central; no sibling checkout or locally published artifacts are needed.
 
 The GitHub Actions build runs `./gradlew clean build` on a fresh Ubuntu checkout
-with JDK 21. This is the external-consumer smoke test for KAZ-126. To repeat it
+with JDK 21. This is the external-consumer smoke test. To repeat it
 locally with an empty dependency cache:
 
 ```sh
