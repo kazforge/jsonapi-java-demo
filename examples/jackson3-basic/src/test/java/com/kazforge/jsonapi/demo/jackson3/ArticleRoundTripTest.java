@@ -11,6 +11,9 @@ import com.kazforge.jsonapi.annotation.JsonApiRelationship;
 import com.kazforge.jsonapi.annotation.JsonApiResource;
 import com.kazforge.jsonapi.api.JsonApi;
 import com.kazforge.jsonapi.core.model.ResourceIdentifier;
+import com.kazforge.jsonapi.core.validation.ValidationRuleCode;
+import com.kazforge.jsonapi.diagnostic.CodecFailureCategory;
+import com.kazforge.jsonapi.diagnostic.JsonApiDocumentReadException;
 import com.kazforge.jsonapi.jackson3.JsonApiJackson3;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
@@ -68,11 +71,17 @@ class ArticleRoundTripTest {
   void rejectsCreateRelationshipWithoutData() {
     String request =
         """
-        {"data":{"type":"articles","attributes":{"title":"New","body":"Created"},"relationships":{"related":{}}}}
+        {"data":{"type":"articles","attributes":{"title":"New","body":"Created"},"relationships":{"related":{"meta":{}}}}}
         """;
 
-    assertThrows(
-        RuntimeException.class, () -> api.resources().readCreate(request, NewArticle.class));
+    JsonApiDocumentReadException exception =
+        assertThrows(
+            JsonApiDocumentReadException.class,
+            () -> api.resources().readCreate(request, NewArticle.class));
+
+    assertEquals(CodecFailureCategory.AGGREGATE_VALIDATION, exception.category());
+    assertEquals(ValidationRuleCode.RELATIONSHIP_DATA_REQUIRED, exception.ruleCode());
+    assertEquals("/data/relationships/related/data", exception.jsonPointer());
   }
 
   @JsonApiResource(type = "articles")
