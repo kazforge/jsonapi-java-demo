@@ -6,9 +6,9 @@ Runnable examples for [jsonapi-java](https://jsonapi.kazforge.com/). Each exampl
 is an independent Gradle subproject under `examples/`.
 
 [Jackson 3 basic](examples/jackson3-basic) is the initial minimal example: an annotated
-article is written as a JSON:API document and read back using the public Level-1 API.
-Its automated test checks the document's resource type, ID and attributes, and
-verifies that the round trip preserves the article.
+article is written as a JSON:API document and read back using the public API.
+Its tests cover the round trip and Core 0.4.0 create-aware reads, including
+ID-less resources, `lid` self-references and invalid relationships.
 
 ## Get started
 
@@ -28,8 +28,19 @@ See the [full documentation](https://jsonapi.kazforge.com/) for library usage.
 
 Examples consume released artifacts exclusively from Maven Central, not the
 jsonapi-java source repository. The initial example depends directly on
-`com.kazforge:jsonapi-java-jackson3:0.3.0`; its API, annotations and core
-dependencies arrive transitively. Dependency versions live in
+`com.kazforge:jsonapi-java-jackson3:0.4.0`; its API, annotations and core
+dependencies arrive transitively. The published Core 0.4.0 inventory is:
+
+| Artifact | Coordinate |
+| --- | --- |
+| Core | `com.kazforge:jsonapi-java-core:0.4.0` |
+| Annotations | `com.kazforge:jsonapi-java-annotations:0.4.0` |
+| API | `com.kazforge:jsonapi-java-api:0.4.0` |
+| Query (optional) | `com.kazforge:jsonapi-java-query:0.4.0` |
+| Jackson 3 adapter | `com.kazforge:jsonapi-java-jackson3:0.4.0` |
+
+All five POMs and JARs resolve from Maven Central. The consumer uses no
+`jsonapi-java-jackson2` or separate `mapping` artifact. Dependency versions live in
 [`gradle/libs.versions.toml`](gradle/libs.versions.toml); Jackson is selected
 explicitly and JUnit modules are aligned with its BOM. `settings.gradle.kts`
 enforces Maven Central; no sibling checkout or locally published artifacts are needed.
