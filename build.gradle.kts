@@ -37,8 +37,10 @@ subprojects {
 
 tasks.named("build") {
     dependsOn(":examples:jackson3-basic:build")
+    dependsOn(":examples:spring-webmvc:build")
 }
 
 tasks.named("clean") {
     dependsOn(":examples:jackson3-basic:clean")
+    dependsOn(":examples:spring-webmvc:clean")
 }

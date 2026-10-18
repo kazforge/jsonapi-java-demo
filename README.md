@@ -10,6 +10,12 @@ article is written as a JSON:API document and read back using the public API.
 Its tests cover the round trip and Core 0.4.0 create-aware reads, including
 ID-less resources, `lid` self-references and invalid relationships.
 
+[Spring WebMVC](examples/spring-webmvc) independently consumes the published
+Spring adapter **0.1.0** with an application-owned Jackson 3/Core **0.4.0**
+runtime, Spring Framework **7.0.9** and Jakarta Servlet **6.1.0**, without Boot.
+MockMvc exercises reads, ID-less creation, negotiation, protocol errors and
+ordinary MVC isolation. Run `./gradlew :examples:spring-webmvc:test`.
+
 ## Get started
 
 Requires JDK 21. Run from the repository root using the committed Gradle wrapper:
@@ -52,6 +58,9 @@ locally with an empty dependency cache:
 ```sh
 GRADLE_USER_HOME="$(mktemp -d /tmp/jsonapi-java-demo-gradle.XXXXXX)" ./gradlew clean build
 ```
+
+For the resolved Spring runtime graph, public Central URLs, signature/SBOM
+checks and release evidence, see the [Spring verification report](examples/spring-webmvc/VERIFICATION.md).
 
 ## Project
 
