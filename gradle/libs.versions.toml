@@ -2,7 +2,7 @@
 
 jsonapi = "0.4.0"
 jsonapi-spring = "0.3.0"
-spring = "7.0.10"
+spring = "7.1.0"
 jackson = "3.3.0"
 junit = "6.1.3"
 spotless = "8.10.4"
