@@ -1,6 +1,6 @@
 [versions]
 
-jsonapi = "0.5.0"
+jsonapi = "0.5.1"
 jsonapi-spring = "0.3.0"
 spring = "7.1.0"
 jackson = "3.3.0"
