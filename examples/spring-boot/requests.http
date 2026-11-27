@@ -1,0 +1,133 @@
+@base = http://localhost:8080
+@jsonapi = application/vnd.api+json
+@ada = 11111111-1111-4111-8111-111111111111
+@grace = 22222222-2222-4222-8222-222222222222
+@ursula = 33333333-3333-4333-8333-333333333333
+@apiGuide = aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2
+@draftNotes = aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1
+
+### List the seeded people
+GET {{base}}/people
+Accept: {{jsonapi}}
+
+### Filter, sort, page, include and select fields (follow links.next for page two)
+GET {{base}}/articles?filter%5Bstatus%5D=PUBLISHED&sort=-title&page%5Bsize%5D=1&include=author,reviewers&fields%5Barticles%5D=title,author,reviewers&fields%5Bpeople%5D=name
+Accept: {{jsonapi}}
+
+### Read the seeded related author as a resource
+GET {{base}}/articles/{{apiGuide}}/author
+Accept: {{jsonapi}}
+
+### The draft has no related author
+GET {{base}}/articles/{{draftNotes}}/author
+Accept: {{jsonapi}}
+
+### Create a draft and capture the server-assigned ID
+POST {{base}}/articles?include=author
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{
+  "data": {
+    "type": "articles",
+    "attributes": {"title": "A publishing walkthrough", "body": "First draft"},
+    "relationships": {
+      "author": {"data": {"type": "people", "id": "{{ada}}"}},
+      "reviewers": {"data": [{"type": "people", "id": "{{grace}}"}]}
+    }
+  }
+}
+
+> {%
+  client.global.set("articleId", response.body.data.id);
+%}
+
+### Change the title, clear the body and leave both relationships untouched
+PATCH {{base}}/articles/{{articleId}}
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{
+  "data": {
+    "type": "articles",
+    "id": "{{articleId}}",
+    "attributes": {"title": "Revised walkthrough", "body": null}
+  }
+}
+
+### Read author linkage
+GET {{base}}/articles/{{articleId}}/relationships/author
+Accept: {{jsonapi}}
+
+### Clear the author of the draft
+PATCH {{base}}/articles/{{articleId}}/relationships/author
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": null}
+
+### Publish without an author (409)
+PATCH {{base}}/articles/{{articleId}}
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": {"type": "articles", "id": "{{articleId}}", "attributes": {"status": "PUBLISHED"}}}
+
+### Restore the author
+PATCH {{base}}/articles/{{articleId}}/relationships/author
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": {"type": "people", "id": "{{ada}}"}}
+
+### Replace reviewers
+PATCH {{base}}/articles/{{articleId}}/relationships/reviewers
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": [{"type": "people", "id": "{{ursula}}"}]}
+
+### Add a reviewer
+POST {{base}}/articles/{{articleId}}/relationships/reviewers
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": [{"type": "people", "id": "{{grace}}"}]}
+
+### Read reviewer linkage
+GET {{base}}/articles/{{articleId}}/relationships/reviewers
+Accept: {{jsonapi}}
+
+### Read related reviewer resources
+GET {{base}}/articles/{{articleId}}/reviewers
+Accept: {{jsonapi}}
+
+### Remove reviewer linkage
+DELETE {{base}}/articles/{{articleId}}/relationships/reviewers
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": [{"type": "people", "id": "{{grace}}"}]}
+
+### Read persisted article and included people
+GET {{base}}/articles/{{articleId}}?include=author,reviewers
+Accept: {{jsonapi}}
+
+### Reject a blank title (400)
+PATCH {{base}}/articles/{{articleId}}
+Accept: {{jsonapi}}
+Content-Type: {{jsonapi}}
+
+{"data": {"type": "articles", "id": "{{articleId}}", "attributes": {"title": ""}}}
+
+### Delete the article
+DELETE {{base}}/articles/{{articleId}}
+Accept: {{jsonapi}}
+
+### The article is gone (404)
+GET {{base}}/articles/{{articleId}}
+Accept: {{jsonapi}}
+
+### Its reviewer still exists
+GET {{base}}/people/{{ursula}}
+Accept: {{jsonapi}}
