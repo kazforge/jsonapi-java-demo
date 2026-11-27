@@ -35,13 +35,19 @@ jobs:
       - name: Build, check formatting, and test with Maven Central dependencies
         run: ./gradlew clean build
       - name: Inspect Spring consumer runtime dependencies
-        run: ./gradlew :examples:spring-webmvc:dependencies --configuration runtimeClasspath
-      - name: Upload smoke-test results
+        run: |
+          set -o pipefail
+          ./gradlew :examples:spring-boot:dependencies :examples:spring-webmvc:dependencies --configuration runtimeClasspath \
+            | tee "$RUNNER_TEMP/runtime-dependencies.txt"
+      - name: Upload consumer verification results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: consumer-test-results
           path: |
+            ${{ runner.temp }}/runtime-dependencies.txt
+            examples/spring-boot/build/reports/tests/
+            examples/spring-boot/build/test-results/
             examples/jackson3-basic/build/reports/tests/
             examples/jackson3-basic/build/test-results/
             examples/spring-webmvc/build/reports/tests/
